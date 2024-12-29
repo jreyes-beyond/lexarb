@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/lexarb
+      - SECRET_KEY=your-super-secret-key-here
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000","http://localhost:5173"]
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=lexarb
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
